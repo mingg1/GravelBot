@@ -7,23 +7,20 @@ import {
   HStack,
   Input,
   Link,
-  Button,
   Text,
   VStack,
 } from 'native-base';
 import { useState } from 'react';
-import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
 import { signIn } from '../redux/slices/authSlice';
-import { AppDispatch, RootState } from '../redux/store';
+import { AppDispatch } from '../redux/store';
+import MainButton from '../components/MainButton';
 
 const SignUp = () => {
   const [formData, setFormData] = useState({ userName: '', email: '' });
   const navigation = useNavigation();
   const dispatch = useDispatch<AppDispatch>();
-  const {
-    auth: { isLoading, userName, email },
-  } = useSelector((state: RootState) => state);
+
   return (
     <Center w="100%">
       <Box safeArea w="90%" py={3} alignItems="center">
@@ -59,20 +56,12 @@ const SignUp = () => {
             <FormControl.Label>Confirm Password</FormControl.Label>
             <Input type="password" p={3.5} size="lg" />
           </FormControl>
-          <Button
+          <MainButton
             onPress={() => {
               dispatch(signIn(formData));
-              //@ts-ignore
-              navigation.navigate('Tabs', { screen: 'Home' });
             }}
-            colorScheme="indigo"
-            mt={10}
-            p={3.5}
-            size="lg"
-            _text={{ fontSize: 'lg', fontWeight: 600 }}
-          >
-            Create account
-          </Button>
+            text=" Create account"
+          />
         </VStack>
         <HStack mt="10" justifyContent="center">
           <Text
@@ -92,8 +81,8 @@ const SignUp = () => {
               navigation.navigate('SignIn');
             }}
             _text={{
-              color: 'indigo.500',
-              fontWeight: 'medium',
+              color: 'green.700',
+              fontWeight: 'extrabold',
               fontSize: 'lg',
             }}
           >

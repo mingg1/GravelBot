@@ -11,9 +11,16 @@ import {
   Text,
   VStack,
 } from 'native-base';
+import { useState } from 'react';
+import { useDispatch } from 'react-redux';
+import MainButton from '../components/MainButton';
+import { signIn } from '../redux/slices/authSlice';
+import { AppDispatch } from '../redux/store';
 
 const SignIn = () => {
   const navigation = useNavigation();
+  const dispatch = useDispatch<AppDispatch>();
+  const [email, setEmail] = useState('');
   return (
     <Center w="100%">
       <Box safeArea w="90%" py={3} alignItems="center">
@@ -23,21 +30,22 @@ const SignIn = () => {
         <VStack space={5} mt="3" width="80%">
           <FormControl>
             <FormControl.Label>Email</FormControl.Label>
-            <Input p={3.5} size="lg" />
+            <Input
+              p={3.5}
+              size="lg"
+              onChangeText={(value) => setEmail(value)}
+            />
           </FormControl>
           <FormControl mt={3}>
             <FormControl.Label>Password</FormControl.Label>
             <Input type="password" p={3.5} size="lg" />
           </FormControl>
-          <Button
-            colorScheme="indigo"
-            mt={10}
-            p={3.5}
-            size="lg"
-            _text={{ fontSize: 'lg', fontWeight: 600 }}
-          >
-            Sign in
-          </Button>
+          <MainButton
+            onPress={() => {
+              dispatch(signIn({ email }));
+            }}
+            text="Sign in"
+          />
         </VStack>
         <HStack mt="10" justifyContent="center">
           <Text
@@ -56,8 +64,8 @@ const SignIn = () => {
               navigation.navigate('SignUp');
             }}
             _text={{
-              color: 'indigo.500',
-              fontWeight: 'medium',
+              color: 'green.700',
+              fontWeight: 'extrabold',
               fontSize: 'lg',
             }}
           >
