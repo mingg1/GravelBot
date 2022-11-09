@@ -13,7 +13,7 @@ import {
 } from 'native-base';
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import MainButton from '../components/MainButton';
+import ContentButton from '../components/ContentButton';
 import { signIn } from '../redux/slices/authSlice';
 import { AppDispatch } from '../redux/store';
 
@@ -40,7 +40,7 @@ const SignIn = () => {
             <FormControl.Label>Password</FormControl.Label>
             <Input type="password" p={3.5} size="lg" />
           </FormControl>
-          <MainButton
+          <ContentButton
             onPress={() => {
               dispatch(signIn({ email }));
             }}

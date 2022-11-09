@@ -14,7 +14,7 @@ import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { signIn } from '../redux/slices/authSlice';
 import { AppDispatch } from '../redux/store';
-import MainButton from '../components/MainButton';
+import ContentButton from '../components/ContentButton';
 
 const SignUp = () => {
   const [formData, setFormData] = useState({ userName: '', email: '' });
@@ -56,7 +56,7 @@ const SignUp = () => {
             <FormControl.Label>Confirm Password</FormControl.Label>
             <Input type="password" p={3.5} size="lg" />
           </FormControl>
-          <MainButton
+          <ContentButton
             onPress={() => {
               dispatch(signIn(formData));
             }}
