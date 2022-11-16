@@ -1,7 +1,8 @@
 import { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
+import { RouteProp, useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
 import {
   Box,
-  Button,
   Divider,
   FlatList,
   Heading,
@@ -11,36 +12,41 @@ import {
 } from 'native-base';
 import { useState } from 'react';
 import { TouchableOpacity } from 'react-native-gesture-handler';
-import RobotStatusButton from '../components/RobotStatusOptions';
-
-export enum RobotStatus {
-  Working = 'Working',
-  Available = 'Available',
-  Unavailable = 'Unavailable',
-}
+import { useDispatch } from 'react-redux';
+import StatusButton from '../components/StatusOptions';
+import { setCurrentRobot } from '../redux/slices/robotSlice';
+import { AppDispatch } from '../redux/store';
+import { RobotStatus } from '../types';
 
 type RootStackParamList = {
-  Robots: { status: RobotStatus };
+  Robots?: { status: RobotStatus };
 };
 
-type DetailScreenProps = BottomTabScreenProps<RootStackParamList, 'Robots'>;
+type RobotsScreenProps = BottomTabScreenProps<RootStackParamList, 'Robots'>;
 
-const Robots = ({
-  route: {
-    params: { status },
+const data = [
+  {
+    id: 1,
+    name: 'GravelBot 1',
+    stauts: RobotStatus.Available,
+    battery: 65,
+    storage: 100,
+    message: 'Ready to use',
   },
-}: DetailScreenProps) => {
-  const [selected, setSelected] = useState(status || RobotStatus.Available);
-  const isSelected = (status: string) => selected === status;
-  const data = [
-    {
-      id: 1,
-      name: 'GravelBot 1',
-      stauts: 'Available',
-      battery: 65,
-      message: 'Ready to use',
-    },
-  ];
+];
+
+const Robots = ({ route: { params } }: RobotsScreenProps) => {
+  const dispatch = useDispatch<AppDispatch>();
+  const [selected, setSelected] = useState(
+    params?.status || RobotStatus.Available
+  );
+  const [robotList, setRobotList] = useState(
+    data.filter((robot) => robot.stauts === selected)
+  );
+  const isSelected = (status: string | undefined) => selected === status;
+  const length = robotList.length;
+  const navigation = useNavigation<StackNavigationProp<any>>();
+
   return (
     <VStack width="90%" marginX="auto">
       <HStack
@@ -52,19 +58,34 @@ const Robots = ({
         justifyContent="space-around"
       >
         {Object.keys(RobotStatus).map((status) => (
-          <RobotStatusButton
+          <StatusButton<RobotStatus>
             key={status}
             status={status}
-            setSelected={setSelected}
+            setSelected={(status) => {
+              setSelected(status);
+              setRobotList(() =>
+                data.filter((robot) => robot.stauts === status)
+              );
+            }}
             isSelected={isSelected(status)}
           />
         ))}
       </HStack>
-      <Heading>{selected} robots</Heading>
+      <Heading>{`${selected} robot${
+        length === 1 ? '' : 's'
+      } (${length}) `}</Heading>
       <FlatList
-        data={data}
+        data={robotList}
         renderItem={({ item }) => (
-          <TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              //@ts-ignore
+              dispatch(setCurrentRobot(item));
+              navigation.navigate('RobotInfo', {
+                screen: 'Robot Info',
+              });
+            }}
+          >
             <Box my={4} p={4} borderRadius={12} backgroundColor="white">
               <Heading size="md">{item.name}</Heading>
               <Text fontSize="md">{item.battery}%</Text>
