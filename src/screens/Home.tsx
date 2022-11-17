@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux';
 import Greetings from '../components/Greetings';
 import Map from '../components/Map';
 import MainBigButton from '../components/MainBigButton';
-import { AppDispatch, RootState } from '../redux/store';
+import { RootState } from '../redux/store';
 import { AreaStatus, RobotStatus } from '../types';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
