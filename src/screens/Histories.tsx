@@ -1,12 +1,4 @@
-import {
-  Box,
-  Divider,
-  FlatList,
-  Heading,
-  HStack,
-  Text,
-  VStack,
-} from 'native-base';
+import { Box, Divider, FlatList, Heading, Text, VStack } from 'native-base';
 import { TouchableOpacity } from 'react-native';
 import { useSelector } from 'react-redux';
 import { formatDate } from '../helper';
@@ -19,15 +11,6 @@ const Histories = () => {
 
   return (
     <VStack width="90%" marginX="auto">
-      <HStack
-        my={8}
-        p={4}
-        borderRadius={12}
-        backgroundColor="white"
-        space={6}
-        justifyContent="space-around"
-      ></HStack>
-
       <FlatList
         data={tasks}
         renderItem={({ item }) => {
