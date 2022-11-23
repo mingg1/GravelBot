@@ -12,6 +12,8 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 const Home = () => {
   const {
     auth: { userName },
+    workingAreas: { workingAreas },
+    robots: { robots },
   } = useSelector((state: RootState) => state);
 
   const navigation = useNavigation<
@@ -33,14 +35,20 @@ const Home = () => {
         <HStack my={6} space={4} justifyContent="space-around">
           <MainBigButton
             heading="Working robots"
-            amount={0}
+            amount={
+              robots.filter((robot) => robot.status === RobotStatus.Working)
+                .length
+            }
             onPress={() =>
               navigation.navigate('Robots', { status: RobotStatus.Working })
             }
           />
           <MainBigButton
             heading="Available robots"
-            amount={1}
+            amount={
+              robots.filter((robot) => robot.status === RobotStatus.Available)
+                .length
+            }
             onPress={() =>
               navigation.navigate('Robots', { status: RobotStatus.Available })
             }
@@ -56,22 +64,29 @@ const Home = () => {
         <Heading>Managed Area</Heading>
         <HStack my={6} space={4} justifyContent="space-around">
           <MainBigButton
-            heading="Unchecked areas"
-            amount={0}
+            heading="Ungraveled areas"
+            amount={
+              workingAreas.filter(
+                (area) => area.status === AreaStatus.Ungraveled
+              ).length
+            }
             onPress={() =>
               navigation.navigate('AreaInfo', {
                 screen: 'Managed Area',
-                params: { status: AreaStatus.Unchecked },
+                params: { status: AreaStatus.Ungraveled },
               })
             }
           />
           <MainBigButton
-            heading="Checked areas"
-            amount={0}
+            heading="Graveled areas"
+            amount={
+              workingAreas.filter((area) => area.status === AreaStatus.Graveled)
+                .length
+            }
             onPress={() =>
               navigation.navigate('AreaInfo', {
                 screen: 'Managed Area',
-                params: { status: AreaStatus.Checked },
+                params: { status: AreaStatus.Graveled },
               })
             }
           />

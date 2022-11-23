@@ -8,6 +8,7 @@ import ContentButton from '../components/ContentButton';
 import ModalForm from '../components/Modal';
 import { deleteWorkingArea } from '../redux/slices/workingAreaSlice';
 import { AppDispatch, RootState } from '../redux/store';
+import * as geolib from 'geolib';
 
 const AreaInfo = () => {
   const navigation = useNavigation();
@@ -32,11 +33,17 @@ const AreaInfo = () => {
         <Divider />
         <Text fontSize="md">{workingArea.description}</Text>
         <Text fontSize="md">Status: {workingArea.status}</Text>
+        {workingArea.lastGraveled && (
+          <Text fontSize="md">last graveled: {workingArea.lastGraveled}</Text>
+        )}
+        <Text fontSize="md">
+          Area: {Math.ceil(geolib.getAreaOfPolygon(workingArea.coordinates))}m²
+        </Text>
         <MapView
           style={{ height: 300 }}
           region={{
-            latitude: workingArea.area[0].latitude,
-            longitude: workingArea.area[0].longitude,
+            latitude: workingArea.coordinates[0].latitude,
+            longitude: workingArea.coordinates[0].longitude,
             latitudeDelta: 0.0013,
             longitudeDelta: 0.0032,
           }}
@@ -44,7 +51,7 @@ const AreaInfo = () => {
           <Polygon
             fillColor="#43b67b85"
             strokeColor="green"
-            coordinates={workingArea.area}
+            coordinates={workingArea.coordinates}
           />
         </MapView>
         <ContentButton
@@ -76,7 +83,7 @@ const AreaInfo = () => {
           showModal={showModal}
           setShowModal={setShowModal}
           areaInfo={workingArea}
-          coordinates={workingArea.area}
+          coordinates={workingArea.coordinates}
           update={true}
         />
       </Box>

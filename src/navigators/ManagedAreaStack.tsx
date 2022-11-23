@@ -1,6 +1,5 @@
 import { createStackNavigator } from '@react-navigation/stack';
 import { Button } from 'native-base';
-
 import NavBackButton from '../components/NavBackButton';
 import AreaInfo from '../screens/AreaInfo';
 import ManagedArea from '../screens/ManagedArea';
@@ -27,6 +26,9 @@ const ManagedAreaStack = () => (
         headerLeft: () => <NavBackButton navigation={navigation} />,
         headerRight: () => (
           <Button
+            mr={6}
+            variant="ghost"
+            _text={{ fontSize: 'lg', fontWeight: 700, color: 'orange.500' }}
             onPress={() => {
               navigation.navigate('Map', { pointer: true });
             }}
@@ -44,7 +46,11 @@ const ManagedAreaStack = () => (
         headerBackTitleVisible: false,
       }}
     />
-    <Stack.Screen name="WorkingAreaInfo" component={AreaInfo} />
+    <Stack.Screen
+      name="WorkingAreaInfo"
+      component={AreaInfo}
+      options={{ headerTitle: 'Working area', headerRight: undefined }}
+    />
   </Stack.Navigator>
 );
 

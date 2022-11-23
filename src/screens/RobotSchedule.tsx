@@ -1,14 +1,4 @@
-import {
-  Box,
-  Button,
-  Container,
-  FormControl,
-  HStack,
-  Input,
-  ScrollView,
-  View,
-  VStack,
-} from 'native-base';
+import { Box, Button, FormControl, HStack, Input, VStack } from 'native-base';
 import { useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../redux/store';
 import { SetStateAction, useState } from 'react';
@@ -31,13 +21,13 @@ const RobotSchedule = () => {
   const [time, setTime] = useState(new Date());
   const [mode, setMode] = useState<'date' | 'time' | undefined>('date');
   const [show, setShow] = useState(false);
-  const [value, setValue] = useState<string | null>(null);
+  const [value, setValue] = useState<string[] | null>(null);
   const [open, setOpen] = useState(false);
 
   const [items, setItems] = useState(
     workingAreas.map((area) => ({
       label: area.name,
-      value: JSON.stringify(area.area),
+      value: JSON.stringify(area.coordinates),
     }))
   );
 
@@ -71,8 +61,15 @@ const RobotSchedule = () => {
   };
 
   return (
-    <Container width="90%" marginX="auto" justifyContent="center">
-      <Box safeArea alignItems="center">
+    <Box width="90%" marginX="auto" height="100%">
+      <Box
+        my={12}
+        px={8}
+        py={10}
+        borderTopRadius={16}
+        backgroundColor="white"
+        justifyContent="center"
+      >
         <VStack space={5} mt="3">
           <FormControl isDisabled={true}>
             <FormControl.Label>Working robot</FormControl.Label>
@@ -107,17 +104,26 @@ const RobotSchedule = () => {
           </HStack>
 
           <FormControl mt={3}>
-            <FormControl.Label>Area</FormControl.Label>
+            <FormControl.Label>Working area(s)</FormControl.Label>
             <DropDownPicker
+              zIndexInverse={1000}
+              placeholder="Select area(s)"
               open={open}
-              value={value || ''}
+              value={value || []}
               items={items}
               setOpen={setOpen}
               setValue={setValue}
               setItems={setItems}
+              multiple={true}
+              mode="BADGE"
+              style={{ zIndex: 99 }}
+              onSelectItem={(item) => {
+                console.log(item);
+              }}
             />
           </FormControl>
           <Button
+            style={{ zIndex: -1 }}
             colorScheme="orange"
             mt={10}
             p={3.5}
@@ -127,7 +133,7 @@ const RobotSchedule = () => {
               console.log(robot.name, {
                 date: date.toDateString(),
                 time: time.toString(),
-                location: value && JSON.parse(value),
+                location: value && value.map((val) => JSON.parse(val)),
               });
 
               if (value) {
@@ -138,7 +144,7 @@ const RobotSchedule = () => {
                       date: date.toDateString(),
                       time: time.toString(),
                     },
-                    location: value && JSON.parse(value),
+                    location: value && value.map((val) => JSON.parse(val)),
                   })
                 );
                 dispatch(updateRobot({ id: robot.id }));
@@ -149,7 +155,7 @@ const RobotSchedule = () => {
           </Button>
         </VStack>
       </Box>
-    </Container>
+    </Box>
   );
 };
 

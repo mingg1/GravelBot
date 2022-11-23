@@ -87,8 +87,8 @@ const ModalForm = ({
                   : (dispatch(
                       addWorkingArea({
                         ...formData,
-                        area: coordinates,
-                        status: AreaStatus.Unchecked,
+                        coordinates,
+                        status: AreaStatus.Ungraveled,
                       })
                     ),
                     toast.show({

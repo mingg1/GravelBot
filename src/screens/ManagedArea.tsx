@@ -28,10 +28,10 @@ const ManagedArea = ({ route: { params } }: ManagedAreaProps) => {
   const dispatch = useDispatch<AppDispatch>();
   const navigation = useNavigation();
   const [selected, setSelected] = useState(
-    params?.status || AreaStatus.Unchecked
+    params?.status || AreaStatus.Ungraveled
   );
   const {
-    workingAreas: { workingAreas },
+    workingAreas: { workingAreas, workingArea },
   } = useSelector((state: RootState) => state);
   const isSelected = (status: string | undefined) => selected === status;
   return (
@@ -68,6 +68,7 @@ const ManagedArea = ({ route: { params } }: ManagedAreaProps) => {
           <TouchableOpacity
             onPress={() => {
               dispatch(setCurrentWorkingArea(item));
+
               //@ts-ignore
               navigation.navigate('WorkingAreaInfo');
             }}
@@ -75,10 +76,13 @@ const ManagedArea = ({ route: { params } }: ManagedAreaProps) => {
             <Box my={4} p={4} borderRadius={12} backgroundColor="white">
               <Heading size="md">{item.name}</Heading>
               <Text fontSize="md">{item.description}</Text>
+              {item.lastGraveled && (
+                <Text fontSize="md">last graveled: {item.lastGraveled}</Text>
+              )}
             </Box>
           </TouchableOpacity>
         )}
-        keyExtractor={(item) => item.area.toString()}
+        keyExtractor={(item) => item.id.toString()}
       />
     </VStack>
   );
