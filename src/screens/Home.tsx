@@ -1,12 +1,14 @@
-import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
+import { useEffect } from 'react';
 import { useNavigation } from '@react-navigation/native';
+import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
+import { useSelector, useDispatch } from 'react-redux';
+import { AppDispatch, RootState } from '../redux/store';
+import { getLoggedInUser } from '../redux/slices/authSlice';
+import { AreaStatus, RobotStatus } from '../types';
 import { Heading, HStack, ScrollView, VStack } from 'native-base';
-import { useSelector } from 'react-redux';
 import Greetings from '../components/Greetings';
 import Map from '../components/Map';
-import MainBigButton from '../components/MainBigButton';
-import { RootState } from '../redux/store';
-import { AreaStatus, RobotStatus } from '../types';
+import MainBigButton from '../components/buttons/MainBigButton';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
 const Home = () => {
@@ -15,7 +17,7 @@ const Home = () => {
     workingAreas: { workingAreas },
     robots: { robots },
   } = useSelector((state: RootState) => state);
-
+  const dispatch = useDispatch<AppDispatch>();
   const navigation = useNavigation<
     BottomTabNavigationProp<
       {
@@ -27,6 +29,10 @@ const Home = () => {
       'Home'
     >
   >();
+
+  useEffect(() => {
+    dispatch(getLoggedInUser());
+  }, []);
 
   return (
     <ScrollView>

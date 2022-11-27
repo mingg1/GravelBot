@@ -1,79 +1,37 @@
-import { useNavigation } from '@react-navigation/native';
-import {
-  Box,
-  Center,
-  FormControl,
-  Heading,
-  HStack,
-  Input,
-  Link,
-  Button,
-  Text,
-  VStack,
-} from 'native-base';
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import ContentButton from '../components/ContentButton';
-import { signIn } from '../redux/slices/authSlice';
 import { AppDispatch } from '../redux/store';
+import { signIn } from '../redux/slices/authSlice';
+import { useNavigation } from '@react-navigation/native';
+import ContentButton from '../components/buttons/ContentButton';
+import AuthForm from '../components/form/AuthForm';
+import FormInput from '../components/form/FormInput';
+import AuthLink from '../components/buttons/AuthLink';
 
 const SignIn = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch<AppDispatch>();
   const [email, setEmail] = useState('');
+
   return (
-    <Center w="100%">
-      <Box safeArea w="90%" py={3} alignItems="center">
-        <Heading size="xl" py={6}>
-          Sign in
-        </Heading>
-        <VStack space={5} mt="3" width="80%">
-          <FormControl>
-            <FormControl.Label>Email</FormControl.Label>
-            <Input
-              p={3.5}
-              size="lg"
-              onChangeText={(value) => setEmail(value)}
-            />
-          </FormControl>
-          <FormControl mt={3}>
-            <FormControl.Label>Password</FormControl.Label>
-            <Input type="password" p={3.5} size="lg" />
-          </FormControl>
-          <ContentButton
-            onPress={() => {
-              dispatch(signIn({ email }));
-            }}
-            text="Sign in"
-          />
-        </VStack>
-        <HStack mt="10" justifyContent="center">
-          <Text
-            fontSize="lg"
-            color="coolGray.600"
-            _dark={{
-              color: 'warmGray.200',
-            }}
-          >
-            Don't have an account?
-          </Text>
-          <Link
-            ml={3}
-            onPress={() => {
-              //@ts-ignore
-              navigation.navigate('SignUp');
-            }}
-            _text={{
-              color: 'green.700',
-              fontWeight: 'extrabold',
-              fontSize: 'lg',
-            }}
-          >
-            Sign Up
-          </Link>
-        </HStack>
-      </Box>
-    </Center>
+    <AuthForm title="Sign In">
+      <FormInput label="Email" onChangeText={(value) => setEmail(value)} />
+      <FormInput label="Password" type="password" />
+      <ContentButton
+        onPress={() => {
+          dispatch(signIn({ email }));
+        }}
+        text="Sign In"
+      />
+      <AuthLink
+        linkText="Don't have an account?"
+        linkButtonText="Sign Up"
+        onPress={() => {
+          //@ts-ignore
+          navigation.navigate('SignUp');
+        }}
+      />
+    </AuthForm>
   );
 };
 
