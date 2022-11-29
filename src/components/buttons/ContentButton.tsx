@@ -13,7 +13,7 @@ const ContentButton = ({ onPress, text }: ContentButtonProps) => (
     mt={10}
     p={3.5}
     size="md"
-    _text={{ fontSize: 'lg', fontWeight: 600 }}
+    _text={{ fontSize: 'lg', fontWeight: 'bold' }}
   >
     {text}
   </Button>

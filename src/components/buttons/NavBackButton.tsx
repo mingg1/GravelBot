@@ -3,10 +3,18 @@ import { Button } from 'native-base';
 
 interface NavBackButtonProps {
   navigation: { goBack: () => void };
+  style?: {
+    position: 'absolute';
+    top: number;
+    left: number;
+  };
+  display?: string;
 }
 
-const NavBackButton = ({ navigation }: NavBackButtonProps) => (
+const NavBackButton = ({ navigation, style, display }: NavBackButtonProps) => (
   <Button
+    style={style}
+    display={display}
     onPress={() => navigation.goBack()}
     px={2}
     py={1.5}
