@@ -7,18 +7,24 @@ import {
   Text,
   VStack,
 } from 'native-base';
-import { useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { AppDispatch, RootState } from '../redux/store';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
+import { useEffect, useState } from 'react';
 import { TouchableOpacity } from 'react-native';
+import { useDispatch } from 'react-redux';
+import { AppDispatch, RootState } from '../redux/store';
 import StatusButton from '../components/StatusOptions';
 import useLocation from '../hooks/useLocation';
 import { setCurrentRobot } from '../redux/slices/robotSlice';
 import { RobotStatus } from '../types';
 import { useSelector } from 'react-redux';
+import RobotStatusInfo from '../components/RobotStatusInfo';
+import {
+  Ionicons,
+  MaterialCommunityIcons,
+  MaterialIcons,
+} from '@expo/vector-icons';
 
 type RootStackParamList = {
   Robots?: { status: RobotStatus };
@@ -45,6 +51,12 @@ const Robots = ({ route: { params } }: RobotsScreenProps) => {
     useLocation(robot.location.latitude, robot.location.longitude)
   );
 
+  useEffect(() => {
+    if (params?.status) {
+      setSelected(params.status);
+      setRobotList(robots.filter((robot) => robot.status === selected));
+    }
+  }, [params?.status]);
   return (
     <VStack width="90%" marginX="auto">
       <HStack
@@ -87,14 +99,41 @@ const Robots = ({ route: { params } }: RobotsScreenProps) => {
               }}
             >
               <Box my={4} p={4} borderRadius={12} backgroundColor="white">
-                <Heading size="md">{item.name}</Heading>
-                <Text fontSize="md">battery: {item.battery}%</Text>
-                <Text fontSize="md">
-                  location:{suburb}, {city}
-                </Text>
-                <Text fontSize="md">gravel filled: {item.storage}%</Text>
-                <Divider />
-                <Text>{item.message}</Text>
+                <Heading size="lg">{item.name}</Heading>
+
+                <VStack mt={3} space={2}>
+                  <HStack space={2}>
+                    {item.status === RobotStatus.Working && (
+                      <RobotStatusInfo
+                        info={`${item.speed}km/h`}
+                        icon={MaterialIcons}
+                        iconName="speed"
+                        iconSize={22}
+                      />
+                    )}
+                    <RobotStatusInfo
+                      info={`${item.battery}%`}
+                      icon={Ionicons}
+                      iconName="battery-half-sharp"
+                      iconSize={6}
+                    />
+                    <RobotStatusInfo
+                      info={`${item.storage}%`}
+                      icon={MaterialCommunityIcons}
+                      iconName="basket-fill"
+                      iconSize={6}
+                    />
+                  </HStack>
+                  <Divider />
+                  <RobotStatusInfo
+                    info={`${suburb}, ${city}`}
+                    tag="location"
+                    icon={Ionicons}
+                    iconName="location-outline"
+                    iconSize={6}
+                  />
+                  <Text fontSize="lg">{item.message}</Text>
+                </VStack>
               </Box>
             </TouchableOpacity>
           );
