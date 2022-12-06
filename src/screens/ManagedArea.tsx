@@ -14,6 +14,7 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
 import StatusButton from '../components/StatusOptions';
+import { formatDate } from '../helper';
 import { setCurrentWorkingArea } from '../redux/slices/workingAreaSlice';
 import { AppDispatch, RootState } from '../redux/store';
 import { AreaStatus } from '../types';
@@ -31,9 +32,10 @@ const ManagedArea = ({ route: { params } }: ManagedAreaProps) => {
     params?.status || AreaStatus.Ungraveled
   );
   const {
-    workingAreas: { workingAreas, workingArea },
+    workingAreas: { workingAreas },
   } = useSelector((state: RootState) => state);
   const isSelected = (status: string | undefined) => selected === status;
+
   return (
     <VStack width="90%" marginX="auto">
       <HStack
@@ -64,24 +66,35 @@ const ManagedArea = ({ route: { params } }: ManagedAreaProps) => {
       }) `}</Heading>
       <FlatList
         data={workingAreas.filter((area) => area.status === selected)}
-        renderItem={({ item }) => (
-          <TouchableOpacity
-            onPress={() => {
-              dispatch(setCurrentWorkingArea(item));
+        renderItem={({ item }) => {
+          return (
+            <TouchableOpacity
+              onPress={() => {
+                dispatch(setCurrentWorkingArea(item));
 
-              //@ts-ignore
-              navigation.navigate('WorkingAreaInfo');
-            }}
-          >
-            <Box my={4} p={4} borderRadius={12} backgroundColor="white">
-              <Heading size="md">{item.name}</Heading>
-              <Text fontSize="md">{item.description}</Text>
-              {item.lastGraveled && (
-                <Text fontSize="md">last graveled: {item.lastGraveled}</Text>
-              )}
-            </Box>
-          </TouchableOpacity>
-        )}
+                //@ts-ignore
+                navigation.navigate('WorkingAreaInfo');
+              }}
+            >
+              <Box my={4} p={4} borderRadius={12} backgroundColor="white">
+                <Heading size="lg">{item.name}</Heading>
+                <Text fontSize="md">{item.description}</Text>
+                {item.lastGraveled && (
+                  <>
+                    <Divider my={2} />
+                    <Text fontSize="md">
+                      last graveled:{' '}
+                      {formatDate(
+                        new Date(item.lastGraveled),
+                        new Date(item.lastGraveled)
+                      )}
+                    </Text>
+                  </>
+                )}
+              </Box>
+            </TouchableOpacity>
+          );
+        }}
         keyExtractor={(item) => item.id.toString()}
       />
     </VStack>

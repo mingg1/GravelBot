@@ -66,10 +66,13 @@ const ModalForm = ({
               onPress={() => {
                 setShowModal(false);
               }}
+              _text={{ color: 'orange.500' }}
             >
               Cancel
             </Button>
             <Button
+              _text={{ fontWeight: 600 }}
+              backgroundColor="green.600"
               onPress={() => {
                 setShowModal(false);
                 update

@@ -1,14 +1,25 @@
 import { useNavigation } from '@react-navigation/native';
-import { Box, Divider, Heading, ScrollView, Text, useToast } from 'native-base';
+import {
+  Box,
+  Divider,
+  Heading,
+  ScrollView,
+  Text,
+  useToast,
+  VStack,
+} from 'native-base';
 import { useState } from 'react';
 import MapView, { Polygon } from 'react-native-maps';
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
-import ContentButton from '../components/ContentButton';
+import ContentButton from '../components/buttons/ContentButton';
 import ModalForm from '../components/Modal';
 import { deleteWorkingArea } from '../redux/slices/workingAreaSlice';
 import { AppDispatch, RootState } from '../redux/store';
 import * as geolib from 'geolib';
+import { formatArea, formatDate, parseDate } from '../helper';
+import HistoryStatusInfo from '../components/HistoryStatusInfo';
+import useLocation from '../hooks/useLocation';
 
 const AreaInfo = () => {
   const navigation = useNavigation();
@@ -18,6 +29,15 @@ const AreaInfo = () => {
   const [showModal, setShowModal] = useState(false);
   const dispatch = useDispatch<AppDispatch>();
   const toast = useToast();
+  const {
+    location: {
+      address: { road, house_number, city },
+    },
+  } = useLocation(
+    workingArea.coordinates[0].latitude,
+    workingArea.coordinates[0].longitude
+  );
+
   return (
     <ScrollView>
       <Box
@@ -29,17 +49,58 @@ const AreaInfo = () => {
         borderTopRadius={16}
         backgroundColor="white"
       >
-        <Heading size="md">{workingArea.name}</Heading>
-        <Divider />
-        <Text fontSize="md">{workingArea.description}</Text>
-        <Text fontSize="md">Status: {workingArea.status}</Text>
+        <Heading size="xl">{workingArea.name}</Heading>
+        <Divider my={2} />
+        <VStack space={2} mb={4}>
+          <Heading fontSize="md" color="gray.500">
+            Address
+          </Heading>
+          <Text fontSize="lg" fontWeight={600}>
+            {road} {house_number || ''}, {city}
+          </Text>
+        </VStack>
+        <VStack space={2} mb={4}>
+          <Heading fontSize="md" color="gray.500">
+            Description
+          </Heading>
+          <Text fontSize="lg" fontWeight={600}>
+            {workingArea.description}
+          </Text>
+        </VStack>
+        <VStack space={2} mb={4}>
+          <Heading fontSize="md" color="gray.500">
+            Status
+          </Heading>
+          <HistoryStatusInfo
+            info={workingArea.status}
+            bgColor="gray.500"
+            fontSize="xs"
+            position="flex-start"
+          />
+        </VStack>
         {workingArea.lastGraveled && (
-          <Text fontSize="md">last graveled: {workingArea.lastGraveled}</Text>
+          <VStack space={2} mb={4}>
+            <Heading fontSize="md" color="gray.500">
+              Last graveled
+            </Heading>
+            <Text fontSize="lg" fontWeight={600}>
+              {formatDate(
+                new Date(workingArea.lastGraveled),
+                new Date(workingArea.lastGraveled)
+              )}
+            </Text>
+          </VStack>
         )}
-        <Text fontSize="md">
-          Area: {Math.ceil(geolib.getAreaOfPolygon(workingArea.coordinates))}m²
-        </Text>
+        <VStack space={2} mb={4}>
+          <Heading fontSize="md" color="gray.500">
+            Area
+          </Heading>
+          <Text fontSize="lg" fontWeight={600}>
+            {formatArea(geolib.getAreaOfPolygon(workingArea.coordinates))}
+          </Text>
+        </VStack>
         <MapView
+          pointerEvents="none"
           style={{ height: 300 }}
           region={{
             latitude: workingArea.coordinates[0].latitude,
@@ -54,7 +115,7 @@ const AreaInfo = () => {
             coordinates={workingArea.coordinates}
           />
         </MapView>
-        <ContentButton
+        {/* <ContentButton
           onPress={() => {
             //@ts-ignore
             navigation.navigate('Map', {
@@ -63,12 +124,13 @@ const AreaInfo = () => {
             });
           }}
           text="Edit area"
-        />
+        /> */}
         <ContentButton
           text="Edit information"
           onPress={() => setShowModal(true)}
         />
         <ContentButton
+          bgColor="red.600"
           text="Delete area"
           onPress={() => {
             toast.show({
