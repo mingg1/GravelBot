@@ -1,14 +1,18 @@
-import { Box, Button, FormControl, HStack, Input, VStack } from 'native-base';
+import { Box, FormControl, Input, VStack, useToast } from 'native-base';
 import { useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../redux/store';
 import { SetStateAction, useState } from 'react';
-import { Platform, TouchableOpacity } from 'react-native';
+import { Platform } from 'react-native';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
-import DropDownPicker, { ItemType } from 'react-native-dropdown-picker';
+import DropDownPicker from 'react-native-dropdown-picker';
 import { useDispatch } from 'react-redux';
 import { addTaskHistory } from '../redux/slices/taskSlice';
 import { formatDate } from '../helper';
 import { updateRobot } from '../redux/slices/robotSlice';
+import { useNavigation } from '@react-navigation/native';
+import { RobotStatus } from '../types';
+import ContentButton from '../components/buttons/ContentButton';
+import GroupButtons from '../components/buttons/GroupButtons';
 
 const RobotSchedule = () => {
   const {
@@ -16,6 +20,8 @@ const RobotSchedule = () => {
     workingAreas: { workingAreas },
   } = useSelector((state: RootState) => state);
   const dispatch = useDispatch<AppDispatch>();
+  const toast = useToast();
+  const navigation = useNavigation();
 
   const [date, setDate] = useState(new Date());
   const [time, setTime] = useState(new Date());
@@ -23,7 +29,6 @@ const RobotSchedule = () => {
   const [show, setShow] = useState(false);
   const [value, setValue] = useState<string[] | null>(null);
   const [open, setOpen] = useState(false);
-
   const [items, setItems] = useState(
     workingAreas.map((area) => ({
       label: area.name,
@@ -94,15 +99,12 @@ const RobotSchedule = () => {
               width={'100%'}
             />
           </FormControl>
-          <HStack justifyContent={'center'} space={8}>
-            <Button flex={1} onPress={showDatePicker}>
-              Date
-            </Button>
-            <Button flex={1} onPress={showTimepicker}>
-              Time
-            </Button>
-          </HStack>
-
+          <GroupButtons
+            lText="Date"
+            lListener={showDatePicker}
+            rText="Time"
+            rListener={showTimepicker}
+          />
           <FormControl mt={3}>
             <FormControl.Label>Working area(s)</FormControl.Label>
             <DropDownPicker
@@ -122,37 +124,44 @@ const RobotSchedule = () => {
               }}
             />
           </FormControl>
-          <Button
-            style={{ zIndex: -1 }}
-            colorScheme="orange"
-            mt={10}
-            p={3.5}
-            size="lg"
-            _text={{ fontSize: 'lg', fontWeight: 600 }}
+          <ContentButton
+            text="Save task"
             onPress={() => {
-              console.log(robot.name, {
-                date: date.toDateString(),
-                time: time.toString(),
-                location: value && value.map((val) => JSON.parse(val)),
-              });
-
               if (value) {
                 dispatch(
                   addTaskHistory({
-                    workingRobot: robot.name,
+                    workingRobot: robot.id,
                     date: {
                       date: date.toDateString(),
                       time: time.toString(),
                     },
+
                     location: value && value.map((val) => JSON.parse(val)),
                   })
                 );
-                dispatch(updateRobot({ id: robot.id }));
+                dispatch(
+                  updateRobot({
+                    id: robot.id,
+                    status: RobotStatus.Working,
+                    speed: 0.5,
+                    storage: robot.storage - 5,
+                  })
+                );
+
+                toast.show({
+                  title: `New task has been scheduled to ${robot.name}`,
+                  placement: 'bottom',
+                  mb: 16,
+                });
+
+                navigation.navigate(
+                  //@ts-ignore
+                  'Robots',
+                  { status: RobotStatus.Working }
+                );
               }
             }}
-          >
-            Save task
-          </Button>
+          />
         </VStack>
       </Box>
     </Box>

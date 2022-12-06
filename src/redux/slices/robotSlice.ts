@@ -15,6 +15,7 @@ const initialState: RobotState = {
     storage: 100,
     message: 'Ready to use',
     location: { latitude: 60.22406592508648, longitude: 24.75837655090797 },
+    speed: 0,
   },
   robots: [
     {
@@ -25,6 +26,17 @@ const initialState: RobotState = {
       storage: 100,
       message: 'Ready to use',
       location: { latitude: 60.22406592508648, longitude: 24.75837655090797 },
+      speed: 0,
+    },
+    {
+      id: 2,
+      name: 'GravelBot 2',
+      status: RobotStatus.Unavailable,
+      battery: 85,
+      storage: 100,
+      message: 'Condition check',
+      location: { latitude: 60.22406592508648, longitude: 24.75837655090797 },
+      speed: 0,
     },
   ],
 };
@@ -39,11 +51,11 @@ const robotSlice = createSlice({
     updateRobot: (state, action) => {
       state.robots = state.robots.map((robot) => {
         if (robot.id === action.payload.id) {
-          return { ...robot, status: RobotStatus.Working };
+          return { ...robot, ...action.payload };
         }
         return robot;
       });
-      state.robot.status = action.payload.status;
+      state.robot = { ...state.robot, ...action.payload };
     },
   },
 });

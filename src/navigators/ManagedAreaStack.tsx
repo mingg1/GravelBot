@@ -1,6 +1,6 @@
 import { createStackNavigator } from '@react-navigation/stack';
 import { Button } from 'native-base';
-import NavBackButton from '../components/NavBackButton';
+import NavBackButton from '../components/buttons/NavBackButton';
 import AreaInfo from '../screens/AreaInfo';
 import ManagedArea from '../screens/ManagedArea';
 import RobotSchedule from '../screens/RobotSchedule';

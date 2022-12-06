@@ -53,10 +53,14 @@ const Robots = ({ route: { params } }: RobotsScreenProps) => {
 
   useEffect(() => {
     if (params?.status) {
-      setSelected(params.status);
-      setRobotList(robots.filter((robot) => robot.status === selected));
+      setSelected(params?.status);
     }
   }, [params?.status]);
+
+  useEffect(() => {
+    setRobotList(robots.filter((robot) => robot.status === selected));
+  }, [selected]);
+
   return (
     <VStack width="90%" marginX="auto">
       <HStack

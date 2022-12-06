@@ -14,6 +14,7 @@ export interface Robot {
   storage: number;
   message: string;
   location: LatLng;
+  speed: number;
 }
 
 export enum AreaStatus {
@@ -28,18 +29,26 @@ export interface WorkingArea {
   description: string;
   coordinates: LatLng[];
   status: AreaStatus;
-  lastGraveled?: string;
+  lastGraveled?: number;
 }
 
 export enum TaskStatus {
   Done = 'Done',
   Ongoing = 'Ongoing',
+  Cancelled = 'Cancelled',
+}
+
+export interface TaskLog {
+  time: string;
+  description: string;
 }
 
 export interface Task {
   id: number;
-  workingRobot: string;
+  workingRobot: number;
   date: { date: string; time: string };
   status: TaskStatus;
-  location: LatLng[];
+  description: string;
+  location: LatLng[][];
+  log: TaskLog[];
 }

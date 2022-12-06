@@ -1,5 +1,5 @@
 import { createStackNavigator } from '@react-navigation/stack';
-import NavBackButton from '../components/NavBackButton';
+import NavBackButton from '../components/buttons/NavBackButton';
 import RobotInfo from '../screens/RobotInfo';
 import RobotSchedule from '../screens/RobotSchedule';
 
@@ -7,7 +7,14 @@ const Stack = createStackNavigator();
 const DetailStack = createStackNavigator();
 
 const Schedule = () => (
-  <DetailStack.Navigator>
+  <DetailStack.Navigator
+    screenOptions={({ navigation }) => {
+      return {
+        headerBackTitleVisible: false,
+        headerLeft: () => <NavBackButton navigation={navigation} />,
+      };
+    }}
+  >
     <DetailStack.Screen
       name="Schedule a task"
       component={RobotSchedule}
