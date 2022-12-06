@@ -1,5 +1,4 @@
 import { registerRootComponent } from 'expo';
-import { StyleSheet } from 'react-native';
 import { NativeBaseProvider } from 'native-base';
 import Root from './navigators/Root';
 import { Provider } from 'react-redux';

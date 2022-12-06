@@ -24,7 +24,7 @@ const SignUp = () => {
       <FormInput
         label="User name"
         onChangeText={(value) =>
-          setFormData((prev) => ({ ...prev, email: value }))
+          setFormData((prev) => ({ ...prev, userName: value }))
         }
       />
       <FormInput label="Password" type="password" />
