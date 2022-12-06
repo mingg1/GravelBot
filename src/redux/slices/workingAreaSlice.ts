@@ -14,7 +14,7 @@ const initialState: WorkingAreaState = {
     description: '',
     coordinates: [],
     status: AreaStatus.Ungraveled,
-    lastGraveled: undefined,
+    lastGraveled: Date.now() - 43200000,
   },
   workingAreas: [
     {
@@ -26,8 +26,8 @@ const initialState: WorkingAreaState = {
         { latitude: 60.22455285336744, longitude: 24.758872961195692 },
         { latitude: 60.22432976368586, longitude: 24.75757860225255 },
       ],
-      status: AreaStatus.Graveled,
-      lastGraveled: new Date().toLocaleString(),
+      status: AreaStatus.Ungraveled,
+      lastGraveled: Date.now() - 43200000,
     },
   ],
 };

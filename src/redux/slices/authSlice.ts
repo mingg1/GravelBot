@@ -9,7 +9,7 @@ interface AuthState {
 
 const initialState: AuthState = {
   isLoading: false,
-  userName: 'test',
+  userName: 'Tiina',
   email: '',
 };
 
@@ -20,6 +20,7 @@ export const getLoggedInUser = createAsyncThunk(
       const authDataSerialized = await AsyncStorage.getItem('loggedInUser');
       if (authDataSerialized) {
         const authData = JSON.parse(authDataSerialized);
+
         return authData;
       }
     } catch (error) {
@@ -65,8 +66,8 @@ const authSlice = createSlice({
       state.isLoading = true;
     });
     builder.addCase(getLoggedInUser.fulfilled, (state, action) => {
-      state.userName ??= action.payload.userName;
-      state.email = action.payload.email;
+      state.userName = action.payload?.userName || 'Tiina';
+      state.email = action.payload?.email;
       state.isLoading = false;
     });
     builder.addCase(getLoggedInUser.rejected, (state) => {
@@ -76,7 +77,7 @@ const authSlice = createSlice({
       state.isLoading = true;
     });
     builder.addCase(signIn.fulfilled, (state, action) => {
-      state.userName ??= action.payload.userName;
+      state.userName = action.payload.userName || 'Tiina';
       state.email = action.payload.email;
       state.isLoading = false;
     });
